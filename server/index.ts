@@ -9,6 +9,7 @@ import { recipientsRouter } from './routes/recipients.js';
 import { previewRouter } from './routes/preview.js';
 import { createSendRouter } from './routes/send.js';
 import { createStatusRouter } from './routes/status.js';
+import { uploadRouter } from './routes/upload.js';
 
 const PORT = process.env.PORT || 3000;
 const SESSION_PATH = path.join(process.cwd(), 'sessions');
@@ -46,6 +47,7 @@ app.use('/api/recipients', recipientsRouter);
 app.use('/api/preview', previewRouter);
 app.use('/api/send', createSendRouter(whatsappClient));
 app.use('/api/status', createStatusRouter(whatsappClient));
+app.use('/api/upload', uploadRouter);
 
 const frontendPath = path.join(process.cwd(), 'frontend-react', 'dist');
 if (fs.existsSync(frontendPath)) {

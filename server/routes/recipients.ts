@@ -4,9 +4,9 @@ import * as path from 'path';
 import type { RecipientsConfig } from '../types/recipient.js';
 import { RecipientsConfigSchema } from '../types/recipient.js';
 import { excelParser } from '../services/excel-parser.js';
+import { fileManager } from '../services/file-manager.js';
 
 const CONFIG_PATH = path.join(process.cwd(), 'config', 'recipients.json');
-const EXCEL_PATH = path.join(process.cwd(), 'data', 'Detalle_NSG_Softys_Consolidado.xlsx');
 
 export const recipientsRouter = Router();
 
@@ -33,10 +33,13 @@ recipientsRouter.get('/', (_req: Request, res: Response) => {
 
 recipientsRouter.get('/executives', async (_req: Request, res: Response) => {
   try {
-    if (!fs.existsSync(EXCEL_PATH)) {
-      return res.status(404).json({ error: 'Archivo Excel no encontrado' });
+    if (!fileManager.hasCurrentFile()) {
+      return res.status(400).json({ 
+        error: 'No hay archivo Excel cargado. Por favor, sube un archivo primero.' 
+      });
     }
 
+    const EXCEL_PATH = fileManager.getCurrentFilePath();
     const data = await excelParser.parse(EXCEL_PATH);
     const executives = excelParser.getUniqueValues(data, 'Ejecutivo');
     
@@ -122,10 +125,13 @@ recipientsRouter.delete('/:name', (req: Request<{ name: string }>, res: Response
 
 recipientsRouter.post('/sync', async (_req: Request, res: Response) => {
   try {
-    if (!fs.existsSync(EXCEL_PATH)) {
-      return res.status(404).json({ error: 'Archivo Excel no encontrado' });
+    if (!fileManager.hasCurrentFile()) {
+      return res.status(400).json({ 
+        error: 'No hay archivo Excel cargado. Por favor, sube un archivo primero.' 
+      });
     }
 
+    const EXCEL_PATH = fileManager.getCurrentFilePath();
     const data = await excelParser.parse(EXCEL_PATH);
     const executives = excelParser.getUniqueValues(data, 'Ejecutivo');
     

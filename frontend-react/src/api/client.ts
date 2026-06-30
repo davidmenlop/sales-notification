@@ -44,6 +44,19 @@ export interface LogEntry {
   data?: unknown;
 }
 
+export interface FileInfo {
+  exists: boolean;
+  fileName?: string;
+  size?: number;
+  uploadedAt?: string;
+}
+
+export interface UploadResponse {
+  success: boolean;
+  message: string;
+  columns: string[];
+}
+
 export const statusApi = {
   get: () => api.get<StatusResponse>('/status').then(r => r.data),
   logout: () => api.post<{ success: boolean; message: string }>('/status/logout').then(r => r.data),
@@ -75,6 +88,15 @@ export const sendApi = {
     const url = `/api/send?ruleIds=${ruleIds.join(',')}&dryRun=${dryRun}`;
     return new EventSource(url);
   },
+};
+
+export const uploadApi = {
+  upload: (formData: FormData) => 
+    api.post<UploadResponse>('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(r => r.data),
+  getInfo: () => 
+    api.get<FileInfo>('/upload/info').then(r => r.data),
 };
 
 export default api;

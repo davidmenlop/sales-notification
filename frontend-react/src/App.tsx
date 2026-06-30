@@ -3,8 +3,9 @@ import { Toaster } from "@/components/ui/sonner"
 import { Dashboard } from "@/components/Dashboard"
 import { SendAlerts } from "@/components/SendAlerts"
 import { Recipients } from "@/components/Recipients"
+import { Files } from "@/components/Files"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bell, Send, Users } from "lucide-react"
+import { Bell, Send, Users, FileSpreadsheet } from "lucide-react"
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -22,7 +23,7 @@ function App() {
 
       <main className="container mx-auto px-4 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               Dashboard
@@ -34,6 +35,10 @@ function App() {
             <TabsTrigger value="recipients" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Destinatarios
+            </TabsTrigger>
+            <TabsTrigger value="files" className="flex items-center gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              Archivos
             </TabsTrigger>
           </TabsList>
 
@@ -47,6 +52,10 @@ function App() {
 
           <TabsContent value="recipients">
             <Recipients />
+          </TabsContent>
+
+          <TabsContent value="files">
+            <Files />
           </TabsContent>
         </Tabs>
       </main>

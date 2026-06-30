@@ -31,6 +31,10 @@ yarn-error.log*
 # Sessions (WhatsApp credentials - no subir por seguridad)
 sessions/
 
+# Uploaded files
+data/current.xlsx
+data/temp/
+
 # Temporary files
 *.tmp
 *.temp

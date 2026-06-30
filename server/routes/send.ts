@@ -3,13 +3,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { excelParser } from '../services/excel-parser.js';
 import { ruleEngine } from '../services/rule-engine.js';
+import { fileManager } from '../services/file-manager.js';
 import type { WhatsAppClient } from '../services/whatsapp-client.js';
 import type { AlertRulesConfig } from '../types/rule.js';
 import type { RecipientsConfig } from '../types/recipient.js';
 
 const RULES_PATH = path.join(process.cwd(), 'config', 'alert-rules.json');
 const RECIPIENTS_PATH = path.join(process.cwd(), 'config', 'recipients.json');
-const EXCEL_PATH = path.join(process.cwd(), 'data', 'Detalle_NSG_Softys_Consolidado.xlsx');
 
 export function createSendRouter(whatsappClient: WhatsAppClient) {
   const router = Router();
@@ -39,8 +39,8 @@ export function createSendRouter(whatsappClient: WhatsAppClient) {
         return res.end();
       }
 
-      if (!fs.existsSync(EXCEL_PATH)) {
-        sendLog('error', 'Archivo Excel no encontrado');
+      if (!fileManager.hasCurrentFile()) {
+        sendLog('error', 'No hay archivo Excel cargado. Por favor, sube un archivo primero.');
         res.write('event: done\ndata: {}\n\n');
         return res.end();
       }
@@ -51,6 +51,7 @@ export function createSendRouter(whatsappClient: WhatsAppClient) {
         return res.end();
       }
 
+      const EXCEL_PATH = fileManager.getCurrentFilePath();
       sendLog('info', `Leyendo archivo: ${path.basename(EXCEL_PATH)}`);
       const data = await excelParser.parse(EXCEL_PATH);
       sendLog('success', `Excel cargado: ${data.metadata.totalRows} filas procesadas`);

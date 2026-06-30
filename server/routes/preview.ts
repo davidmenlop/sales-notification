@@ -3,12 +3,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { excelParser } from '../services/excel-parser.js';
 import { ruleEngine } from '../services/rule-engine.js';
+import { fileManager } from '../services/file-manager.js';
 import type { AlertRulesConfig } from '../types/rule.js';
 import type { RecipientsConfig } from '../types/recipient.js';
 
 const RULES_PATH = path.join(process.cwd(), 'config', 'alert-rules.json');
 const RECIPIENTS_PATH = path.join(process.cwd(), 'config', 'recipients.json');
-const EXCEL_PATH = path.join(process.cwd(), 'data', 'Detalle_NSG_Softys_Consolidado.xlsx');
 
 export const previewRouter = Router();
 
@@ -16,8 +16,10 @@ previewRouter.post('/', async (req: Request, res: Response) => {
   try {
     const { ruleIds } = req.body;
 
-    if (!fs.existsSync(EXCEL_PATH)) {
-      return res.status(404).json({ error: 'Archivo Excel no encontrado' });
+    if (!fileManager.hasCurrentFile()) {
+      return res.status(400).json({ 
+        error: 'No hay archivo Excel cargado. Por favor, sube un archivo primero.' 
+      });
     }
 
     if (!fs.existsSync(RULES_PATH)) {
@@ -36,6 +38,7 @@ previewRouter.post('/', async (req: Request, res: Response) => {
       }
     }
 
+    const EXCEL_PATH = fileManager.getCurrentFilePath();
     const data = await excelParser.parse(EXCEL_PATH);
 
     let selectedRules = rulesConfig.rules.filter(r => r.enabled);
