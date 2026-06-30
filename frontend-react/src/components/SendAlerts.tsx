@@ -89,7 +89,7 @@ export function SendAlerts() {
     }
 
     try {
-      const url = `http://localhost:3000/api/send`
+      const url = `/api/send`
       const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

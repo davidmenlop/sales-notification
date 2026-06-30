@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: '/api',
   timeout: 30000,
 });
 
@@ -72,7 +72,7 @@ export const previewApi = {
 
 export const sendApi = {
   send: (ruleIds: string[], dryRun: boolean = false): EventSource => {
-    const url = `http://localhost:3000/api/send?ruleIds=${ruleIds.join(',')}&dryRun=${dryRun}`;
+    const url = `/api/send?ruleIds=${ruleIds.join(',')}&dryRun=${dryRun}`;
     return new EventSource(url);
   },
 };
