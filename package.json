@@ -1,0 +1,35 @@
+{
+  "name": "sales-notification",
+  "version": "1.0.0",
+  "description": "Sistema de notificaciones via WhatsApp basado en informes comerciales",
+  "type": "module",
+  "scripts": {
+    "start": "tsx server/index.ts",
+    "dev": "tsx watch server/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "whatsapp",
+    "notifications",
+    "sales"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "@whiskeysockets/baileys": "^6.7.9",
+    "cors": "^2.8.6",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "handlebars": "^4.7.8",
+    "pino": "^9.6.0",
+    "qrcode-terminal": "^0.12.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

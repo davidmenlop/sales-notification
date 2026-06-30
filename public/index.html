@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Notification System</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="blue-grey darken-3">
+    <div class="nav-wrapper container">
+      <a href="#" class="brand-logo">
+        <i class="material-icons left">notifications</i>
+        Sales Notifications
+      </a>
+      <ul id="nav-mobile" class="right">
+        <li>
+          <span id="connection-status" class="status-badge disconnected">
+            <i class="material-icons tiny">wifi_off</i>
+            Desconectado
+          </span>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <ul class="tabs tabs-fixed-width tab-demo z-depth-1 mt-2">
+      <li class="tab"><a href="#dashboard" class="active"><i class="material-icons left">dashboard</i>Dashboard</a></li>
+      <li class="tab"><a href="#send-alerts"><i class="material-icons left">send</i>Enviar Alertas</a></li>
+      <li class="tab"><a href="#recipients"><i class="material-icons left">people</i>Destinatarios</a></li>
+    </ul>
+
+    <div id="dashboard" class="tab-content">
+      <div class="row mt-2" id="qr-section" style="display: none;">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content center-align">
+              <span class="card-title">
+                <i class="material-icons left purple-text">qr_code</i>
+                Escanea este código QR con WhatsApp
+              </span>
+              <p class="grey-text">Abre WhatsApp → Configuración → Dispositivos vinculados → Vincular un dispositivo</p>
+              <div id="qrcode" class="center-align mt-2 mb-2"></div>
+              <p class="grey-text"><small>El QR se actualiza automáticamente cada 20 segundos</small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col s12 m4">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                <i class="material-icons left blue-text">wifi</i>
+                Estado WhatsApp
+              </span>
+              <div id="wa-status-detail" class="center-align">
+                <div class="preloader-wrapper small active" id="wa-status-loader">
+                  <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left"><div class="circle"></div></div>
+                    <div class="gap-patch"><div class="circle"></div></div>
+                    <div class="circle-clipper right"><div class="circle"></div></div>
+                  </div>
+                </div>
+                <p id="wa-status-text" class="mt-1">Verificando...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                <i class="material-icons left green-text">rule</i>
+                Reglas Activas
+              </span>
+              <h3 id="rules-count" class="center-align">0</h3>
+              <p class="center-align grey-text">reglas configuradas</p>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m4">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                <i class="material-icons left orange-text">people</i>
+                Destinatarios
+              </span>
+              <h3 id="recipients-count" class="center-align">0</h3>
+              <p class="center-align grey-text">ejecutivos configurados</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Acciones Rápidas</span>
+              <a href="#send-alerts" class="btn blue waves-effect modal-trigger">
+                <i class="material-icons left">send</i>Enviar Alertas
+              </a>
+              <a href="#recipients" class="btn orange waves-effect modal-trigger">
+                <i class="material-icons left">people</i>Gestionar Destinatarios
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="send-alerts" class="tab-content">
+      <div class="row mt-2">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Seleccionar Reglas</span>
+              <div id="rules-list" class="collection">
+                <div class="center-align">
+                  <div class="preloader-wrapper small active">
+                    <div class="spinner-layer spinner-blue-only">
+                      <div class="circle-clipper left"><div class="circle"></div></div>
+                      <div class="gap-patch"><div class="circle"></div></div>
+                      <div class="circle-clipper right"><div class="circle"></div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-action">
+                <button id="btn-preview" class="btn grey waves-effect">
+                  <i class="material-icons left">visibility</i>Preview
+                </button>
+                <button id="btn-send" class="btn green waves-effect">
+                  <i class="material-icons left">send</i>Enviar
+                </button>
+                <button id="btn-dry-run" class="btn blue waves-effect">
+                  <i class="material-icons left">science</i>Dry Run
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="preview-section" style="display: none;">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                <i class="material-icons left">visibility</i>Preview del Mensaje
+              </span>
+              <div id="preview-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">
+                <i class="material-icons left">terminal</i>Logs de Ejecución
+              </span>
+              <div id="logs-container" class="logs-container">
+                <p class="grey-text center-align">Los logs aparecerán aquí cuando se ejecute una acción...</p>
+              </div>
+              <button id="btn-clear-logs" class="btn-flat grey-text waves-effect mt-1">
+                <i class="material-icons left">clear_all</i>Limpiar Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="recipients" class="tab-content">
+      <div class="row mt-2">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Gestión de Destinatarios</span>
+              <div class="card-action" style="padding: 10px 0 20px 0;">
+                <button id="btn-sync" class="btn blue waves-effect">
+                  <i class="material-icons left">sync</i>Sincronizar desde Excel
+                </button>
+                <button id="btn-add-recipient" class="btn green waves-effect modal-trigger" data-target="modal-recipient">
+                  <i class="material-icons left">person_add</i>Agregar Destinatario
+                </button>
+              </div>
+              <table id="recipients-table" class="striped highlight">
+                <thead>
+                  <tr>
+                    <th>Ejecutivo</th>
+                    <th>WhatsApp</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="recipients-tbody">
+                  <tr>
+                    <td colspan="4" class="center-align">
+                      <div class="preloader-wrapper small active">
+                        <div class="spinner-layer spinner-blue-only">
+                          <div class="circle-clipper left"><div class="circle"></div></div>
+                          <div class="gap-patch"><div class="circle"></div></div>
+                          <div class="circle-clipper right"><div class="circle"></div></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-recipient" class="modal">
+    <div class="modal-content">
+      <h4 id="modal-recipient-title">Agregar Destinatario</h4>
+      <div class="input-field">
+        <input id="recipient-name" type="text" required>
+        <label for="recipient-name">Nombre del Ejecutivo</label>
+      </div>
+      <div class="input-field">
+        <input id="recipient-whatsapp" type="tel" placeholder="+573001234567">
+        <label for="recipient-whatsapp" class="active">Número de WhatsApp</label>
+      </div>
+      <div class="switch">
+          <label>
+            Deshabilitado
+            <input id="recipient-enabled" type="checkbox" checked>
+            <span class="lever"></span>
+            Habilitado
+          </label>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
+      <a href="#!" id="btn-save-recipient" class="waves-effect waves-green btn">Guardar</a>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

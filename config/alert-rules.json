@@ -1,0 +1,55 @@
+{
+  "rules": [
+    {
+      "id": "top-skus-no-disponibles",
+      "name": "Top 5 SKUs no disponibles",
+      "type": "aggregation",
+      "enabled": true,
+      "analysis": {
+        "group_by_field": "Ejecutivo",
+        "filter": {
+          "field": "Disponibilidad",
+          "operator": "equals",
+          "value": "☆"
+        },
+        "aggregate": {
+          "group_by": "Sku Infaltable",
+          "metric": "count",
+          "sort": {
+            "field": "count",
+            "order": "desc"
+          },
+          "limit": 5
+        },
+        "calculate_percentage": {
+          "denominator": "count_distinct",
+          "denominator_field": "ID Punto Venta"
+        }
+      },
+      "message_template": "👋 Hola {{Ejecutivo}},\n\n📊 *ALERTA DE INVENTARIO* 📊\n\nTe comparto los {{limit}} SKUs con mayor frecuencia de no disponibilidad:\n\n{{#each items}}🔴 *{{Sku Infaltable}}*\n   ❌ No disponible en {{count}} puntos de venta\n   📈 Representa el {{percentage}}% de tus puntos atendidos\n\n{{/each}}---\n📅 Reporte generado automáticamente",
+      "recipients": ["{{Ejecutivo}}"]
+    },
+    {
+      "id": "puntos-venta-nsg-bajo",
+      "name": "Puntos de venta con NSG < 80%",
+      "type": "aggregation",
+      "enabled": true,
+      "analysis": {
+        "group_by_field": "Ejecutivo",
+        "filter": {
+          "field": "% Real NSG",
+          "operator": "less_than",
+          "value": 80
+        },
+        "select_fields": ["Punto Venta", "% Real NSG"],
+        "unique_by": "Punto Venta",
+        "sort": {
+          "field": "% Real NSG",
+          "order": "asc"
+        }
+      },
+      "message_template": "👋 Hola {{Ejecutivo}},\n\n📉 *ALERTA DE RENDIMIENTO* 📉\n\nTienes puntos de venta con NSG menor al 80%:\n\n{{#each items}}🔻 *{{Punto Venta}}*\n   📊 NSG: {{% Real NSG}}%\n{{/each}}\n\n---\n📅 Reporte generado automáticamente",
+      "recipients": ["{{Ejecutivo}}"]
+    }
+  ]
+}
