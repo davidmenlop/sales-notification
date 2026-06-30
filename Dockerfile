@@ -12,8 +12,8 @@ WORKDIR /app/frontend-react
 RUN npm install
 RUN npm run build
 
-# Production stage
-FROM node:20-alpine
+# Build stage for backend
+FROM node:20-alpine AS backend-builder
 
 WORKDIR /app
 
@@ -21,11 +21,28 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY server/ ./server/
+
+# Install ALL dependencies (including dev)
+RUN npm install
+
+# Compile TypeScript
+RUN npx tsc
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy backend files
+COPY package*.json ./
 COPY config/ ./config/
 COPY data/ ./data/
 
-# Install backend dependencies
+# Install only production dependencies
 RUN npm install --production
+
+# Copy compiled backend from builder stage
+COPY --from=backend-builder /app/dist ./dist
 
 # Copy built frontend from builder stage
 COPY --from=frontend-builder /app/frontend-react/dist ./frontend-react/dist
@@ -33,8 +50,8 @@ COPY --from=frontend-builder /app/frontend-react/dist ./frontend-react/dist
 # Create sessions directory
 RUN mkdir -p sessions
 
-# Expose port (Railway will override this)
+# Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
+# Start compiled JavaScript
+CMD ["node", "dist/server/index.js"]
