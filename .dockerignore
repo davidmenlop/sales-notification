@@ -1,0 +1,10 @@
+node_modules
+frontend-react/node_modules
+frontend-react/dist
+dist
+sessions
+.git
+.gitignore
+*.md
+.env
+.DS_Store
