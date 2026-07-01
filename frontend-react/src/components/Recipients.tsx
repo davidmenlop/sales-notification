@@ -17,7 +17,7 @@ export function Recipients() {
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingExecutive, setEditingExecutive] = useState<Executive | null>(null)
-  const [formData, setFormData] = useState({ name: "", whatsapp: "", enabled: true })
+  const [formData, setFormData] = useState({ name: "", whatsapp: "", supervisor: "", enabled: true })
 
   useEffect(() => {
     fetchExecutives()
@@ -48,7 +48,7 @@ export function Recipients() {
 
   const handleAdd = () => {
     setEditingExecutive(null)
-    setFormData({ name: "", whatsapp: "", enabled: true })
+    setFormData({ name: "", whatsapp: "", supervisor: "", enabled: true })
     setDialogOpen(true)
   }
 
@@ -57,6 +57,7 @@ export function Recipients() {
     setFormData({
       name: executive.name,
       whatsapp: executive.whatsapp || "",
+      supervisor: executive.supervisor || "",
       enabled: executive.enabled,
     })
     setDialogOpen(true)
@@ -85,6 +86,7 @@ export function Recipients() {
       if (editingExecutive) {
         await recipientsApi.update(editingExecutive.name, {
           whatsapp: formData.whatsapp || null,
+          supervisor: formData.supervisor || null,
           enabled: formData.enabled,
         })
         toast.success("Destinatario actualizado")
@@ -92,6 +94,7 @@ export function Recipients() {
         await recipientsApi.create({
           name: formData.name,
           whatsapp: formData.whatsapp || null,
+          supervisor: formData.supervisor || null,
           enabled: formData.enabled,
         })
         toast.success("Destinatario creado")
@@ -137,6 +140,7 @@ export function Recipients() {
                 <TableRow>
                   <TableHead>Ejecutivo</TableHead>
                   <TableHead>WhatsApp</TableHead>
+                  <TableHead>Supervisor</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead>Habilitado</TableHead>
                   <TableHead className="text-right">Acciones</TableHead>
@@ -145,7 +149,7 @@ export function Recipients() {
               <TableBody>
                 {executives.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">
                       No hay ejecutivos. Sincroniza desde Excel o agrega manualmente.
                     </TableCell>
                   </TableRow>
@@ -155,6 +159,11 @@ export function Recipients() {
                       <TableCell className="font-medium">{executive.name}</TableCell>
                       <TableCell>
                         {executive.whatsapp || (
+                          <span className="text-muted-foreground">No configurado</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {executive.supervisor || (
                           <span className="text-muted-foreground">No configurado</span>
                         )}
                       </TableCell>
@@ -230,6 +239,18 @@ export function Recipients() {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, whatsapp: e.target.value })}
                 placeholder="+573001234567"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="supervisor">WhatsApp del Supervisor</Label>
+              <Input
+                id="supervisor"
+                value={formData.supervisor}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, supervisor: e.target.value })}
+                placeholder="+573009876543"
+              />
+              <p className="text-xs text-muted-foreground">
+                El supervisor también recibirá las alertas de este ejecutivo
+              </p>
             </div>
             <div className="flex items-center space-x-2">
               <Switch

@@ -9,6 +9,7 @@ export interface ParsedExcelData {
     totalRows: number;
     sheetName: string;
     fileName: string;
+    dateRange?: string;
   };
 }
 

@@ -34,7 +34,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
       ])
       setStatus(statusData)
       setRules(rulesData)
-      setExecutivesCount(executivesData.filter(e => e.configured).length)
+      setExecutivesCount(executivesData.filter((e: any) => e.configured).length)
     } catch (error) {
       console.error("Error fetching data:", error)
     } finally {

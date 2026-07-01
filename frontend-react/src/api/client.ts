@@ -21,6 +21,7 @@ export interface Rule {
 export interface Executive {
   name: string;
   whatsapp: string | null;
+  supervisor: string | null;
   enabled: boolean;
   configured: boolean;
 }
@@ -67,12 +68,12 @@ export const rulesApi = {
 };
 
 export const recipientsApi = {
-  list: () => api.get<{ executives: Record<string, { whatsapp: string | null; enabled: boolean }> }>('/recipients').then(r => r.data),
-  executives: () => api.get<Executive[]>('/recipients/executives').then(r => r.data),
-  sync: () => api.post<{ success: boolean; total: number; message: string }>('/recipients/sync').then(r => r.data),
-  create: (data: { name: string; whatsapp: string | null; enabled: boolean }) => 
+  list: () => api.get('/recipients').then(r => r.data),
+  executives: () => api.get('/recipients/executives').then(r => r.data),
+  sync: () => api.post('/recipients/sync').then(r => r.data),
+  create: (data: { name: string; whatsapp: string | null; supervisor?: string | null; enabled: boolean }) => 
     api.post('/recipients', data).then(r => r.data),
-  update: (name: string, data: { whatsapp?: string | null; enabled?: boolean }) => 
+  update: (name: string, data: { whatsapp?: string | null; supervisor?: string | null; enabled?: boolean }) => 
     api.put(`/recipients/${encodeURIComponent(name)}`, data).then(r => r.data),
   delete: (name: string) => 
     api.delete(`/recipients/${encodeURIComponent(name)}`).then(r => r.data),

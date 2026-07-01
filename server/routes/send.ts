@@ -101,6 +101,21 @@ export function createSendRouter(whatsappClient: WhatsAppClient) {
             recipientName: nameMap[alert.recipient] || alert.recipient,
             message: alert.message
           });
+
+          // Buscar si el ejecutivo tiene supervisor configurado
+          const executiveName = nameMap[alert.recipient];
+          if (executiveName && recipientsConfig.executives[executiveName]?.supervisor) {
+            const supervisorPhone = recipientsConfig.executives[executiveName].supervisor;
+            if (supervisorPhone) {
+              allAlerts.push({
+                ruleId: alert.ruleId,
+                ruleName: alert.ruleName,
+                recipient: supervisorPhone,
+                recipientName: `Supervisor de ${executiveName}`,
+                message: alert.message
+              });
+            }
+          }
         }
       }
 

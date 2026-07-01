@@ -99,7 +99,7 @@ export class RuleEngine {
       const message = templateEngine.renderMultiple(
         rule.message_template,
         rows,
-        { count: rows.length }
+        { count: rows.length, dateRange: data.metadata.dateRange || '' }
       );
 
       alerts.push({

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const ExecutiveRecipientSchema = z.object({
   whatsapp: z.string().nullable(),
+  supervisor: z.string().nullable().optional(),
   enabled: z.boolean().default(true),
   lastUpdated: z.string().nullable()
 });

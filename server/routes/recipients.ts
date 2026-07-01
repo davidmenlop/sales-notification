@@ -48,6 +48,7 @@ recipientsRouter.get('/executives', async (_req: Request, res: Response) => {
     const result = executives.map(name => ({
       name,
       whatsapp: config.executives[name]?.whatsapp || null,
+      supervisor: config.executives[name]?.supervisor || null,
       enabled: config.executives[name]?.enabled ?? true,
       configured: !!config.executives[name]?.whatsapp
     }));
@@ -60,7 +61,7 @@ recipientsRouter.get('/executives', async (_req: Request, res: Response) => {
 
 recipientsRouter.post('/', (req: Request, res: Response) => {
   try {
-    const { name, whatsapp, enabled = true } = req.body;
+    const { name, whatsapp, supervisor, enabled = true } = req.body;
     
     if (!name) {
       return res.status(400).json({ error: 'El nombre es requerido' });
@@ -69,6 +70,7 @@ recipientsRouter.post('/', (req: Request, res: Response) => {
     const config = loadRecipients();
     config.executives[name] = {
       whatsapp: whatsapp || null,
+      supervisor: supervisor || null,
       enabled,
       lastUpdated: new Date().toISOString()
     };
@@ -83,19 +85,21 @@ recipientsRouter.post('/', (req: Request, res: Response) => {
 recipientsRouter.put('/:name', (req: Request<{ name: string }>, res: Response) => {
   try {
     const name = req.params.name;
-    const { whatsapp, enabled } = req.body;
+    const { whatsapp, supervisor, enabled } = req.body;
     
     const config = loadRecipients();
     
     if (!config.executives[name]) {
       config.executives[name] = {
         whatsapp: null,
+        supervisor: null,
         enabled: true,
         lastUpdated: null
       };
     }
 
     if (whatsapp !== undefined) config.executives[name].whatsapp = whatsapp;
+    if (supervisor !== undefined) config.executives[name].supervisor = supervisor;
     if (enabled !== undefined) config.executives[name].enabled = enabled;
     config.executives[name].lastUpdated = new Date().toISOString();
     
@@ -141,6 +145,7 @@ recipientsRouter.post('/sync', async (_req: Request, res: Response) => {
       if (!config.executives[name]) {
         config.executives[name] = {
           whatsapp: null,
+          supervisor: null,
           enabled: true,
           lastUpdated: new Date().toISOString()
         };

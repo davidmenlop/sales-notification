@@ -26,7 +26,7 @@
           "denominator_field": "ID Punto Venta"
         }
       },
-      "message_template": "👋 Hola {{Ejecutivo}},\n\n📊 *ALERTA DE INVENTARIO* 📊\n\nTe comparto los {{limit}} SKUs con mayor frecuencia de no disponibilidad:\n\n{{#each items}}🔴 *{{Sku Infaltable}}*\n   ❌ No disponible en {{count}} puntos de venta\n   📈 Representa el {{percentage}}% de tus puntos atendidos\n\n{{/each}}---\n📅 Reporte generado automáticamente",
+      "message_template": "👋 Hola {{Ejecutivo}},\n\n📊 *ALERTA DE INVENTARIO* 📊\n{{dateRange}}\n\nTe comparto los {{limit}} SKUs con mayor frecuencia de no disponibilidad:\n\n{{#each items}}🔴 *{{Sku Infaltable}}*\n   ❌ No disponible en {{count}} puntos de venta\n   📈 Representa el {{percentage}}% de tus puntos atendidos\n\n{{/each}}---\n📅 Reporte generado automáticamente",
       "recipients": ["{{Ejecutivo}}"]
     },
     {
@@ -48,7 +48,7 @@
           "order": "asc"
         }
       },
-      "message_template": "👋 Hola {{Ejecutivo}},\n\n📉 *ALERTA DE RENDIMIENTO* 📉\n\nTienes puntos de venta con NSG menor al 80%:\n\n{{#each items}}🔻 *{{Punto Venta}}*\n   📊 NSG: {{% Real NSG}}%\n{{/each}}\n\n---\n📅 Reporte generado automáticamente",
+      "message_template": "👋 Hola {{Ejecutivo}},\n\n📉 *ALERTA DE RENDIMIENTO* 📉\n{{dateRange}}\n\nTienes puntos de venta con NSG menor al 80%:\n\n{{#each items}}🔻 *{{Punto Venta}}*\n   📊 NSG: {{% Real NSG}}%\n{{/each}}\n\n---\n📅 Reporte generado automáticamente",
       "recipients": ["{{Ejecutivo}}"]
     }
   ]

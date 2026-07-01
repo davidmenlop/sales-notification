@@ -96,9 +96,46 @@ export class ExcelParser {
       metadata: {
         totalRows: rows.length,
         sheetName: sheet.name,
-        fileName: filePath.split('/').pop() || filePath
+        fileName: filePath.split('/').pop() || filePath,
+        dateRange: this.extractDateRange(rows)
       }
     };
+  }
+
+  private extractDateRange(rows: ExcelRow[]): string | undefined {
+    const dates: Date[] = [];
+    
+    for (const row of rows) {
+      const fecha = row['Fecha'];
+      if (fecha) {
+        const dateStr = String(fecha);
+        // Intentar parsear formato DD/MM/YYYY
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const year = parseInt(parts[2], 10);
+          const date = new Date(year, month, day);
+          if (!isNaN(date.getTime())) {
+            dates.push(date);
+          }
+        }
+      }
+    }
+    
+    if (dates.length === 0) return undefined;
+    
+    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+    
+    return `Semana del ${formatDate(minDate)} al ${formatDate(maxDate)}`;
   }
 
   getUniqueValues(data: ParsedExcelData, field: string): string[] {

@@ -173,7 +173,8 @@ export class AggregationEngine {
         items: processedItems,
         [group_by_field]: groupKey,
         limit: aggregate?.limit || processedItems.length,
-        total: processedItems.length
+        total: processedItems.length,
+        dateRange: data.metadata.dateRange || ''
       };
 
       results.push({
