@@ -27,14 +27,22 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   const fetchData = async () => {
     try {
-      const [statusData, rulesData, executivesData] = await Promise.all([
-        statusApi.get(),
-        rulesApi.list(),
-        recipientsApi.executives(),
-      ])
+      const statusData = await statusApi.get()
       setStatus(statusData)
-      setRules(rulesData)
-      setExecutivesCount(executivesData.filter((e: any) => e.configured).length)
+
+      try {
+        const rulesData = await rulesApi.list()
+        setRules(rulesData)
+      } catch {
+        // ignore
+      }
+
+      try {
+        const executivesData = await recipientsApi.executives()
+        setExecutivesCount(executivesData.filter((e: any) => e.configured).length)
+      } catch {
+        setExecutivesCount(0)
+      }
     } catch (error) {
       console.error("Error fetching data:", error)
     } finally {
